@@ -131,6 +131,16 @@
 #define __erf_data arm_math_erf_data
 #define __v_exp_data arm_math_v_exp_data
 #define __v_log_data arm_math_v_log_data
+#define __v_erf_data arm_math_v_erf_data
+#define __v_erfc_data arm_math_v_erfc_data
+#define __v_erfcf_data arm_math_v_erfcf_data
+#define __v_erff_data arm_math_v_erff_data
+#define __v_exp_tail_data arm_math_v_exp_tail_data
+#define __v_log10_data arm_math_v_log10_data
+#define __v_log2_data arm_math_v_log2_data
+#define __v_pow_exp_data arm_math_v_pow_exp_data
+#define __v_pow_log_data arm_math_v_pow_log_data
+#define __v_powf_data arm_math_v_powf_data
 
 /* On some platforms (in particular Windows) INFINITY and HUGE_VAL might
    be defined in such a way that might not produce the expected bit pattern,
@@ -379,6 +389,7 @@ extern const struct exp2f_data
   double shift;
 } __exp2f_data HIDDEN;
 
+/* Data for logf and log10f.  */
 #define LOGF_TABLE_BITS 4
 #define LOGF_POLY_ORDER 4
 extern const struct logf_data
@@ -388,6 +399,7 @@ extern const struct logf_data
     double invc, logc;
   } tab[1 << LOGF_TABLE_BITS];
   double ln2;
+  double invln10;
   double poly[LOGF_POLY_ORDER - 1]; /* First order coefficient is 1.  */
 } __logf_data HIDDEN;
 
@@ -520,13 +532,105 @@ extern const struct erf_data
 #define V_EXP_TABLE_BITS 7
 extern const uint64_t __v_exp_data[1 << V_EXP_TABLE_BITS] HIDDEN;
 
+#define V_LOG_POLY_ORDER 6
 #define V_LOG_TABLE_BITS 7
 extern const struct v_log_data
 {
+  /* Shared data for vector log and log-derived routines (e.g. asinh).  */
+  double poly[V_LOG_POLY_ORDER - 1];
+  double ln2;
   struct
   {
     double invc, logc;
   } table[1 << V_LOG_TABLE_BITS];
 } __v_log_data HIDDEN;
+
+/* Some data for SVE powf's internal exp and log.  */
+#define V_POWF_EXP2_TABLE_BITS 5
+#define V_POWF_EXP2_N (1 << V_POWF_EXP2_TABLE_BITS)
+#define V_POWF_LOG2_TABLE_BITS 5
+#define V_POWF_LOG2_N (1 << V_POWF_LOG2_TABLE_BITS)
+extern const struct v_powf_data
+{
+  double invc[V_POWF_LOG2_N];
+  double logc[V_POWF_LOG2_N];
+  uint64_t scale[V_POWF_EXP2_N];
+} __v_powf_data HIDDEN;
+
+/* Some data for AdvSIMD and SVE pow's internal exp and log.  */
+#define V_POW_EXP_TABLE_BITS 8
+extern const struct v_pow_exp_data
+{
+  double poly[3];
+  double n_over_ln2, ln2_over_n_hi, ln2_over_n_lo, shift;
+  uint64_t sbits[1 << V_POW_EXP_TABLE_BITS];
+} __v_pow_exp_data HIDDEN;
+
+#define V_POW_LOG_TABLE_BITS 7
+extern const struct v_pow_log_data
+{
+  double poly[7]; /* First coefficient is 1.  */
+  double ln2_hi, ln2_lo;
+  double invc[1 << V_POW_LOG_TABLE_BITS];
+  double logc[1 << V_POW_LOG_TABLE_BITS];
+  double logctail[1 << V_POW_LOG_TABLE_BITS];
+} __v_pow_log_data HIDDEN;
+
+#define V_LOG2_TABLE_BITS 7
+extern const struct v_log2_data
+{
+  double poly[5];
+  double invln2;
+  struct
+  {
+    double invc, log2c;
+  } table[1 << V_LOG2_TABLE_BITS];
+} __v_log2_data HIDDEN;
+
+#define V_LOG10_TABLE_BITS 7
+extern const struct v_log10_data
+{
+  double poly[5];
+  double invln10, log10_2;
+  struct
+  {
+    double invc, log10c;
+  } table[1 << V_LOG10_TABLE_BITS];
+} __v_log10_data HIDDEN;
+
+#define V_EXP_TAIL_TABLE_BITS 8
+extern const uint64_t __v_exp_tail_data[1 << V_EXP_TAIL_TABLE_BITS] HIDDEN;
+
+extern const struct v_erff_data
+{
+  struct
+  {
+    float erf, scale;
+  } tab[513];
+} __v_erff_data HIDDEN;
+
+extern const struct v_erfcf_data
+{
+  struct
+  {
+    float erfc, scale;
+  } tab[645];
+} __v_erfcf_data HIDDEN;
+
+extern const struct v_erf_data
+{
+  struct
+  {
+    double erf, scale;
+  } tab[769];
+} __v_erf_data HIDDEN;
+
+extern const struct v_erfc_data
+{
+  struct
+  {
+    double erfc, scale;
+  } tab[3488];
+} __v_erfc_data HIDDEN;
 
 #endif
