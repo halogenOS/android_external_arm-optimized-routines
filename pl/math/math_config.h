@@ -71,6 +71,27 @@
 
 /* Symbol renames to avoid libc conflicts.  */
 #define __exp_data pl_math_exp_data
+#define __asin_poly pl_math_asin_poly
+#define __asinf_poly pl_math_asinf_poly
+#define __asinh_data pl_math_asinh_data
+#define __asinhf_data pl_math_asinhf_data
+#define __atan_poly_data pl_math_atan_poly_data
+#define __atanf_poly_data pl_math_atanf_poly_data
+#define __cbrt_data pl_math_cbrt_data
+#define __cbrtf_data pl_math_cbrtf_data
+#define __erf_data pl_math_erf_data
+#define __erfc_data pl_math_erfc_data
+#define __erfcf_data pl_math_erfcf_data
+#define __erff_data pl_math_erff_data
+#define __expf_data pl_math_expf_data
+#define __expm1_poly pl_math_expm1_poly
+#define __expm1f_poly pl_math_expm1f_poly
+#define __log10_data pl_math_log10_data
+#define __log1p_data pl_math_log1p_data
+#define __log1pf_data pl_math_log1pf_data
+#define __log_data pl_math_log_data
+#define __tanf_poly_data pl_math_tanf_poly_data
+#define __v_log_data pl_math_v_log_data
 
 /* Optionally used extensions.  */
 #ifdef __GNUC__
@@ -121,6 +142,15 @@
 #define __math_check_uflow arm_math_check_uflow
 #define __math_check_oflowf arm_math_check_oflowf
 #define __math_check_uflowf arm_math_check_uflowf
+
+/* On some platforms (in particular Windows) INFINITY and HUGE_VAL might
+   be defined in such a way that might not produce the expected bit pattern,
+   therefore we enforce the glibc math.h definition using a builtin that is
+   supported in both gcc and clang.  */
+#if defined (_WIN32) && (defined (__GNUC__) || defined (__clang__))
+# undef INFINITY
+# define INFINITY __builtin_inff()
+#endif
 
 #if HAVE_FAST_ROUND
 /* When set, the roundtoint and converttoint functions are provided with
@@ -355,12 +385,6 @@ extern const struct erff_data
   } tab[513];
 } __erff_data HIDDEN;
 
-extern const struct sv_erff_data
-{
-  float erf[513];
-  float scale[513];
-} __sv_erff_data HIDDEN;
-
 extern const struct erfcf_data
 {
   struct
@@ -428,11 +452,7 @@ extern const struct exp_data
   uint64_t tab[2 * (1 << EXP_TABLE_BITS)];
 } __exp_data HIDDEN;
 
-/* Copied from math/v_exp.h for use in vector exp_tail.  */
-#define V_EXP_TAIL_TABLE_BITS 8
-extern const uint64_t __v_exp_tail_data[1 << V_EXP_TAIL_TABLE_BITS] HIDDEN;
-
-/* Copied from math/v_exp.h for use in vector exp2.  */
+/* Copied from math/ for use in vector exp.  */
 #define V_EXP_TABLE_BITS 7
 extern const uint64_t __v_exp_data[1 << V_EXP_TABLE_BITS] HIDDEN;
 
@@ -443,12 +463,6 @@ extern const struct erf_data
     double erf, scale;
   } tab[769];
 } __erf_data HIDDEN;
-
-extern const struct sv_erf_data
-{
-  double erf[769];
-  double scale[769];
-} __sv_erf_data HIDDEN;
 
 extern const struct erfc_data
 {
@@ -525,40 +539,6 @@ extern const struct tanf_poly_data
   float poly_cotan[TANF_Q_POLY_NCOEFFS];
 } __tanf_poly_data HIDDEN;
 
-#define V_LOG2_TABLE_BITS 7
-extern const struct v_log2_data
-{
-  double poly[5];
-  double invln2;
-  struct
-  {
-    double invc, log2c;
-  } table[1 << V_LOG2_TABLE_BITS];
-} __v_log2_data HIDDEN;
-
-#define V_LOG10_TABLE_BITS 7
-extern const struct v_log10_data
-{
-  double poly[5];
-  double invln10, log10_2;
-  struct
-  {
-    double invc, log10c;
-  } table[1 << V_LOG10_TABLE_BITS];
-} __v_log10_data HIDDEN;
-
-/* Some data for SVE powf's internal exp and log.  */
-#define V_POWF_EXP2_TABLE_BITS 5
-#define V_POWF_EXP2_N (1 << V_POWF_EXP2_TABLE_BITS)
-#define V_POWF_LOG2_TABLE_BITS 5
-#define V_POWF_LOG2_N (1 << V_POWF_LOG2_TABLE_BITS)
-extern const struct v_powf_data
-{
-  double invc[V_POWF_LOG2_N];
-  double logc[V_POWF_LOG2_N];
-  uint64_t scale[V_POWF_EXP2_N];
-} __v_powf_data HIDDEN;
-
 #define V_LOG_POLY_ORDER 6
 #define V_LOG_TABLE_BITS 7
 extern const struct v_log_data
@@ -604,24 +584,5 @@ extern const float __asinf_poly[ASINF_POLY_ORDER + 1] HIDDEN;
 
 #define ASIN_POLY_ORDER 11
 extern const double __asin_poly[ASIN_POLY_ORDER + 1] HIDDEN;
-
-/* Some data for AdvSIMD and SVE pow's internal exp and log.  */
-#define V_POW_EXP_TABLE_BITS 8
-extern const struct v_pow_exp_data
-{
-  double poly[3];
-  double n_over_ln2, ln2_over_n_hi, ln2_over_n_lo, shift;
-  uint64_t sbits[1 << V_POW_EXP_TABLE_BITS];
-} __v_pow_exp_data HIDDEN;
-
-#define V_POW_LOG_TABLE_BITS 7
-extern const struct v_pow_log_data
-{
-  double poly[7]; /* First coefficient is 1.  */
-  double ln2_hi, ln2_lo;
-  double invc[1 << V_POW_LOG_TABLE_BITS];
-  double logc[1 << V_POW_LOG_TABLE_BITS];
-  double logctail[1 << V_POW_LOG_TABLE_BITS];
-} __v_pow_log_data HIDDEN;
 
 #endif

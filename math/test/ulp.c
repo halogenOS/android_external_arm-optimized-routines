@@ -16,6 +16,8 @@
 #include <string.h>
 #include "mathlib.h"
 
+#include "trigpi_references.h"
+
 /* Don't depend on mpfr by default.  */
 #ifndef USE_MPFR
 # define USE_MPFR 0
@@ -23,50 +25,6 @@
 #if USE_MPFR
 # include <mpfr.h>
 #endif
-
-static inline uint64_t
-asuint64 (double f)
-{
-  union
-  {
-    double f;
-    uint64_t i;
-  } u = {f};
-  return u.i;
-}
-
-static inline double
-asdouble (uint64_t i)
-{
-  union
-  {
-    uint64_t i;
-    double f;
-  } u = {i};
-  return u.f;
-}
-
-static inline uint32_t
-asuint (float f)
-{
-  union
-  {
-    float f;
-    uint32_t i;
-  } u = {f};
-  return u.i;
-}
-
-static inline float
-asfloat (uint32_t i)
-{
-  union
-  {
-    uint32_t i;
-    float f;
-  } u = {i};
-  return u.f;
-}
 
 static uint64_t seed = 0x0123456789abcdef;
 static uint64_t
@@ -204,7 +162,7 @@ next_d2 (void *g)
 static int secondcall;
 
 /* Wrappers for vector functions.  */
-#ifdef __vpcs
+#if WANT_SIMD_TESTS
 typedef __f32x4_t v_float;
 typedef __f64x2_t v_double;
 /* First element of fv and dv may be changed by -c argument.  */
@@ -325,7 +283,7 @@ struct fun
 static const struct fun fun[] = {
 #if USE_MPFR
 #  define F(x, x_wrap, x_long, x_mpfr, a, s, t, twice)                        \
-    { #x, a, s, twice, 0 { .t = x_wrap }, { .t = x_long }, { .t = x_mpfr } },
+    { #x, a, s, twice, 0, { .t = x_wrap }, { .t = x_long }, { .t = x_mpfr } },
 #  define SVF(x, x_wrap, x_long, x_mpfr, a, s, t, twice)                      \
     { #x, a, s, twice, 1, { .t##_pred = x_wrap }, { .t = x_long }, { .t = x_mpfr } },
 #else
@@ -829,7 +787,7 @@ main (int argc, char *argv[])
 	case 'z':
 	  conf.ignore_zero_sign = 1;
 	  break;
-#ifdef __vpcs
+#if WANT_SIMD_TESTS
 	case 'c':
 	  argc--;
 	  argv++;
