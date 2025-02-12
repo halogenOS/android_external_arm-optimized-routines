@@ -1,7 +1,7 @@
 /*
  * Function entries for mathbench.
  *
- * Copyright (c) 2022-2024, Arm Limited.
+ * Copyright (c) 2022-2025, Arm Limited.
  * SPDX-License-Identifier: MIT OR Apache-2.0 WITH LLVM-exception
  */
 /* clang-format off */
@@ -54,6 +54,9 @@ F (arm_math_erff, -4.0, 4.0)
 VNF (_ZGVnN4v_expf_1u, -9.9, 9.9)
 VNF (_ZGVnN4v_exp2f_1u, -9.9, 9.9)
 # if WANT_TRIGPI_TESTS
+VND (_ZGVnN2v_asinpi, -0.9, 0.9)
+VNF (_ZGVnN4v_asinpif, -0.9, 0.9)
+VNF (_ZGVnN4v_acospif, -0.9, 0.9)
 VNF (_ZGVnN4v_cospif, -0.9, 0.9)
 VND (_ZGVnN2v_cospi, -0.9, 0.9)
 VNF (_ZGVnN4v_sinpif, -0.9, 0.9)
@@ -83,6 +86,7 @@ VND (_ZGVnN2v_tanpi, -0.9, 0.9)
 {"_ZGVsMxv_cexpif", 'f', 's', -3.1, 3.1, {.svf = _Z_sv_cexpif_wrap}},
 {"_ZGVsMxv_cexpi", 'd', 's', -3.1, 3.1, {.svd = _Z_sv_cexpi_wrap}},
 # if WANT_TRIGPI_TESTS
+SVF (_ZGVsMxv_acospif, -0.9, 0.9)
 SVF (_ZGVsMxv_cospif, -0.9, 0.9)
 SVD (_ZGVsMxv_cospi, -0.9, 0.9)
 SVF (_ZGVsMxv_sinpif, -0.9, 0.9)

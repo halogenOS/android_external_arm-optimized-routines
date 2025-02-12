@@ -1,7 +1,7 @@
 /*
  * Public API.
  *
- * Copyright (c) 2015-2024, Arm Limited.
+ * Copyright (c) 2015-2025, Arm Limited.
  * SPDX-License-Identifier: MIT OR Apache-2.0 WITH LLVM-exception
  */
 
@@ -113,8 +113,10 @@ DECL_SIMD_aarch64 double tanh (double);
 /* Vector functions following the vector PCS using ABI names.  */
 __vpcs float32x4_t _ZGVnN4v_acosf (float32x4_t);
 __vpcs float32x4_t _ZGVnN4v_acoshf (float32x4_t);
+__vpcs float32x4_t _ZGVnN4v_acospif (float32x4_t);
 __vpcs float32x4_t _ZGVnN4v_asinf (float32x4_t);
 __vpcs float32x4_t _ZGVnN4v_asinhf (float32x4_t);
+__vpcs float32x4_t _ZGVnN4v_asinpif (float32x4_t);
 __vpcs float32x4_t _ZGVnN4v_atanf (float32x4_t);
 __vpcs float32x4_t _ZGVnN4v_atanhf (float32x4_t);
 __vpcs float32x4_t _ZGVnN4v_cbrtf (float32x4_t);
@@ -151,6 +153,7 @@ __vpcs float64x2_t _ZGVnN2v_acos (float64x2_t);
 __vpcs float64x2_t _ZGVnN2v_acosh (float64x2_t);
 __vpcs float64x2_t _ZGVnN2v_asin (float64x2_t);
 __vpcs float64x2_t _ZGVnN2v_asinh (float64x2_t);
+__vpcs float64x2_t _ZGVnN2v_asinpi (float64x2_t);
 __vpcs float64x2_t _ZGVnN2v_atan (float64x2_t);
 __vpcs float64x2_t _ZGVnN2v_atanh (float64x2_t);
 __vpcs float64x2_t _ZGVnN2v_cbrt (float64x2_t);
@@ -189,6 +192,7 @@ __vpcs float64x2_t _ZGVnN2v_erfinv (float64x2_t);
 #  include <arm_sve.h>
 svfloat32_t _ZGVsMxv_acosf (svfloat32_t, svbool_t);
 svfloat32_t _ZGVsMxv_acoshf (svfloat32_t, svbool_t);
+svfloat32_t _ZGVsMxv_acospif (svfloat32_t, svbool_t);
 svfloat32_t _ZGVsMxv_asinf (svfloat32_t, svbool_t);
 svfloat32_t _ZGVsMxv_asinhf (svfloat32_t, svbool_t);
 svfloat32_t _ZGVsMxv_atanf (svfloat32_t, svbool_t);
